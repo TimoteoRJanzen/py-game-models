@@ -13,27 +13,27 @@ def main() -> None:
     for player, data in players.items():
 
         race = Race.objects.get_or_create(
-            name=data["race"]["name"],
-            description=data["race"]["description"])
+            name=data.get("race", {}).get("name"),
+            description=data.get("race", {}).get("description"))
 
         skills = []
-        for skill in data["race"]["skills"]:
+        for skill in data.get("race", {}).get("skills"):
             set_skill = Skill.objects.get_or_create(
-                name=skill["name"],
-                bonus=skill["bonus"],
+                name=skill.get("name"),
+                bonus=skill.get("bonus"),
                 race=race[0])
             skills.append(set_skill)
 
         guild = (None, None)
-        if data["guild"]:
+        if data.get("guild"):
             guild = Guild.objects.get_or_create(
-                name=data["guild"]["name"],
-                description=data["guild"]["description"])
+                name=data["guild"].get("name"),
+                description=data["guild"].get("description"))
 
         Player.objects.get_or_create(
             nickname=player,
-            email=data["email"],
-            bio=data["bio"],
+            email=data.get("email"),
+            bio=data.get("bio"),
             guild=guild[0],
             race=race[0])
 
